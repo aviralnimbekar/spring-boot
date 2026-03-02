@@ -9,7 +9,7 @@ services:
       POSTGRES_USER: app
       POSTGRES_PASSWORD: app
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - springs_security_data:/var/lib/postgresql/data
 
 volumes:
   springs_security_data:
