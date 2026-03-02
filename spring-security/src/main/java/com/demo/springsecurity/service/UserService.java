@@ -1,5 +1,6 @@
 package com.demo.springsecurity.service;
 
+import com.demo.springsecurity.dto.ChangeRoleRequest;
 import com.demo.springsecurity.dto.UserResponse;
 import com.demo.springsecurity.dto.RegisterRequest;
 import com.demo.springsecurity.model.UserEntity;
@@ -17,7 +18,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserResponse register(RegisterRequest request) {
-        String role = userRepository.count() == 0 ? "ROLE_ADMIN" : "ROLE_USER";
+        String role = userRepository.count() == 0 ? "ADMIN" : "USER";
 
         UserEntity user = new UserEntity();
         user.setUsername(request.username());
@@ -30,6 +31,14 @@ public class UserService {
             throw new IllegalArgumentException("Username already exists");
         }
 //       TODO: model mapper can be used here
+        return new UserResponse(user.getId(), user.getUsername(), user.getRole(), user.isEnabled());
+    }
+
+    public UserResponse updateRole(ChangeRoleRequest request) {
+        UserEntity user = userRepository.findByUsername(request.username())
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        user.setRole(request.role());
+        user = userRepository.save(user);
         return new UserResponse(user.getId(), user.getUsername(), user.getRole(), user.isEnabled());
     }
 }
