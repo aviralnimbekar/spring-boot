@@ -10,6 +10,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -32,6 +34,12 @@ public class UserService {
         }
 //       TODO: model mapper can be used here
         return new UserResponse(user.getId(), user.getUsername(), user.getRole(), user.isEnabled());
+    }
+
+    public List<UserResponse> getAllUsers() {
+        return userRepository.findAll().stream()
+                .map(user -> new UserResponse(user.getId(), user.getUsername(), user.getRole(), user.isEnabled()))
+                .toList();
     }
 
     public UserResponse updateRole(ChangeRoleRequest request) {
